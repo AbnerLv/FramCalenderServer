@@ -18,13 +18,8 @@ public class MessageBoardServlet extends BaseServlet {
     
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String json=null;
-		try {
-			json = MessageBoardDao.getInstance().getMessageInfos();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	
+		String json = MessageBoardDao.getInstance().getMessageInfos();
 		response.setContentType("text/html;charset=utf-8");
 		 //页面输出JSONArray的内容  
         PrintWriter out = response.getWriter();  

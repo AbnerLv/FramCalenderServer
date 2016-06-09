@@ -36,32 +36,37 @@ public class UserDao {
 			System.out.println("sql = " + sql);
 
 			while (rs.next()) {
+				Integer id = rs.getInt("id");
 				String t_username = rs.getString("username");
 				String t_eamil = rs.getString("email");
 				String t_password = rs.getString("password");
-
-				UserEntity entity = new UserEntity(t_username, t_eamil,
-						t_password);
+				String profile = rs.getString("profile");
+				String phone = rs.getString("phone");
+				String city = rs.getString("city");
+				Integer age = rs.getInt("age");
+				Integer sex = rs.getInt("sex");
+				String address = rs.getString("address");
+				UserEntity entity = new UserEntity(id,t_username, t_eamil,
+						t_password,profile,phone,city,age,sex,address);
 				json = JsonUtil.createJsonString(entity);
 
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		System.out.println("checkLogin json = " + json);
 		return json;
 	}
 
-	public String BackPassword(String emp_no, String emp_phone_no,
-			String emp_identify) {
-		String sql = "select emp_password from emp_info where emp_no = '"
-				+ emp_no + "' and emp_phone_no = '" + emp_phone_no
-				+ "' and emp_identify = '" + emp_identify + "'";
+	public String BackPassword(String username, String email) {
+		String sql = "select emp_password from t_user where username = '"
+				+ username + "' and email = '" + email+ "'";
 		String password = null;
 		try {
 			manager.connDB();
 			ResultSet rs = manager.executeQuery(sql);
 			while (rs.next()) {
-				password = rs.getString("emp_password");
+				password = rs.getString("password");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -79,10 +84,9 @@ public class UserDao {
 	 */
 	public int changePassword(String username, String oldPassword,
 			String newPassword) {
-		String sql = "update emp_info set emp_password = '" + newPassword
-				+ "' where emp_password='" + oldPassword
-				+ "' and emp_nickname='" + username + "' or emp_no ='"
-				+ username + "' or emp_phone_no='" + username + "'";
+		String sql = "update t_user set password = '" + newPassword
+				+ "' where password='" + oldPassword
+				+ "' and username='" + username + "'";
 		System.out.println(sql);
 		int flag = 0;
 		try {
@@ -104,8 +108,8 @@ public class UserDao {
 	 */
 	public int register(String username, String password, String email) {
 		int flag = 0;
-		String sql = "UPDATE t_user SET username = '" + username
-				+ "',password = '" + password + "', email = '" + email + "'";
+		String sql = "INSERT INTO t_user(username, password, email) VALUES ('" + username
+				+ "','" + password + "', '" + email + "')";
 		System.out.println(sql);
 		try {
 			manager.connDB();

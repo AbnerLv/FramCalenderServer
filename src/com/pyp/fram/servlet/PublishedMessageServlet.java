@@ -19,12 +19,10 @@ public class PublishedMessageServlet extends BaseServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	    String userId = request.getParameter("userId");
 	    System.out.println("userId = " + userId);
-		try {
-			String json = MessageBoardDao.getInstance().getMessagesByUserId(userId);
-			sendXml(response,json);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+	
+		String json = MessageBoardDao.getInstance().getMessagesByUserId(userId);
+		sendXml(response,json);
+	
 	}
 
 	

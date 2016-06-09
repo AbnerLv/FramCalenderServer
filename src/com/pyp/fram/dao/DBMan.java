@@ -1,10 +1,8 @@
 package com.pyp.fram.dao;
 
 import java.io.IOException;
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -23,8 +21,6 @@ public class DBMan {
 	private String strConn = null;
 
 	private Connection conn = null;
-	private PreparedStatement pstm = null;
-	private CallableStatement cstm = null;
 
 	private DBMan() throws IOException {
 		bundle = new PropertyResourceBundle(
@@ -36,7 +32,7 @@ public class DBMan {
 		this.dbPasswd = getString("dbpassword");
 
 		jdbcDrive = "com.mysql.jdbc.Driver";
-		strConn = "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName;
+		strConn = "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName+"?useUnicode=true&characterEncoding=UTF-8";
 	}
 
 	/**

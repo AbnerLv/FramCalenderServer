@@ -1,6 +1,7 @@
 package com.pyp.fram.servlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -8,32 +9,28 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSONObject;
-import com.pyp.fram.dao.UserDao;
+import com.pyp.fram.dao.MessageBoardDao;
+import com.pyp.fram.entity.CommentEntity;
 import com.pyp.fram.entity.ResponseEntity;
 import com.pyp.fram.utils.JsonUtil;
 
-/**
- * ÓÃ»§×¢²á
- */
-@WebServlet(name="/ResgisterServlet", urlPatterns="/register.json")
-public class RegisterServlet extends BaseServlet {
+
+@WebServlet(name="/AddCommentServlet",urlPatterns="/addComment.json")
+public class AddCommentServlet extends BaseServlet {
 	private static final long serialVersionUID = 1L;
        
-   
+    
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		JSONObject jsonObj = getClientJSON(request);
-		String password = jsonObj.getString("password");
-		String username = jsonObj.getString("username");
-		String email = jsonObj.getString("email");
-		ResponseEntity responseEntity = new ResponseEntity();
-		int flag = 0;
-		try {
-			flag = UserDao.getInstance().register(username, password, email);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		responseEntity.setCode(flag);
-		sendXml(response,JsonUtil.createJsonString(responseEntity));
+		String messageId = jsonObj.getString("messageId");
+		String userId = jsonObj.getString("userId");
+		String content = jsonObj.getString("content");
+		String time = jsonObj.getString("time");
+		CommentEntity entity = new CommentEntity("",messageId,userId,content,time);
+	
+		sendXml(response,JsonUtil.createJsonString(MessageBoardDao.getInstance().addComment(entity)));
+		
 	}
 
 	

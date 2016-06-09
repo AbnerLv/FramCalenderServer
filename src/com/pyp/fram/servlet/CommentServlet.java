@@ -22,12 +22,8 @@ public class CommentServlet extends BaseServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		String messageId = request.getParameter("messageId");
-		String json=null;
-		try {
-			json = MessageBoardDao.getInstance().getCommentById(messageId);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+		String 	json = MessageBoardDao.getInstance().getCommentById(messageId);
+		
 		response.setContentType("text/html;charset=utf-8");
 		 //页面输出JSONArray的内容  
         PrintWriter out = response.getWriter();  
