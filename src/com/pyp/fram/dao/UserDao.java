@@ -12,10 +12,12 @@ public class UserDao {
 	private DBMan manager;
 	private static UserDao dao = null;
 
-	public static UserDao getInstance() throws ClassNotFoundException,
-			IOException {
+	public static UserDao getInstance(){
 		if (dao == null) {
-			dao = new UserDao();
+			try {
+				dao = new UserDao();
+			} catch (Exception e) {
+		  }	
 		}
 		return dao;
 	}
@@ -58,9 +60,9 @@ public class UserDao {
 		return json;
 	}
 
-	public String BackPassword(String username, String email) {
-		String sql = "select emp_password from t_user where username = '"
-				+ username + "' and email = '" + email+ "'";
+	public String forgetPassword(String username, String email,String phone) {
+		String sql = "select password from t_user where username = '"
+				+ username + "' OR email = '" + email+ "' AND phone = '"+phone+"'" ;
 		String password = null;
 		try {
 			manager.connDB();
@@ -82,11 +84,39 @@ public class UserDao {
 	 * @param newPassword
 	 * @return
 	 */
-	public int changePassword(String username, String oldPassword,
+	public int modifyPassword(String username, String oldPassword,
 			String newPassword) {
 		String sql = "update t_user set password = '" + newPassword
 				+ "' where password='" + oldPassword
 				+ "' and username='" + username + "'";
+		System.out.println(sql);
+		int flag = 0;
+		try {
+			manager.connDB();
+			flag = manager.executeUpdate(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return flag;
+	}
+	
+	/**
+	 * 修改个人信息
+	 * @param username
+	 * @param oldPassword
+	 * @param newPassword
+	 * @return
+	 */
+	public int modifyPerInfo(UserEntity entity) {
+		String sql = "update t_user set sex = '" + entity.getSex()
+				+"',age = '" + entity.getAge()+"'"
+				+",phone = '" + entity.getPhone()+"'"
+				+",email = '" + entity.getEmail()+"'"
+				+",city = '" + entity.getCity()+"'"
+				+",address = '" + entity.getAddress()+"'"
+				+",profile = '" + entity.getProfile()+"'"
+				+",username = '" + entity.getUsername()+"'"
+				+ " where id='" + entity.getId() + "'";
 		System.out.println(sql);
 		int flag = 0;
 		try {
