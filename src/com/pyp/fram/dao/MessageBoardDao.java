@@ -4,12 +4,14 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.google.gson.Gson;
 import com.pyp.fram.entity.CommentEntity;
 import com.pyp.fram.entity.MessageBoardEntity;
 import com.pyp.fram.entity.ResponseEntity;
+import com.pyp.fram.utils.DateUtil;
 
 public class MessageBoardDao {
 
@@ -38,10 +40,10 @@ public class MessageBoardDao {
 	 * @return
 	 */
 	public String getMessageInfos() {
-		String sql = "SELECT m.id,m.content,m.userid,m.date,m.time,u.username,(CASE WHEN c.num IS NULL THEN 0 ELSE c.num END ) count "
+		String sql = "SELECT m.id,m.content,m.userid,m.date,u.username,(CASE WHEN c.num IS NULL THEN 0 ELSE c.num END ) count "
 				+ " FROM t_message m LEFT JOIN "
 				+ "(SELECT COUNT(message_id) AS num,id,message_id FROM t_comment GROUP BY message_id) c "
-				+ "ON c.message_id = m.id  LEFT JOIN t_user u ON u.id = m.userid";
+				+ "ON c.message_id = m.id  LEFT JOIN t_user u ON u.id = m.userid order by m.date desc";
 
 		List<MessageBoardEntity> mMessageInfos = new ArrayList<MessageBoardEntity>();
 		String json = null;
@@ -55,12 +57,8 @@ public class MessageBoardDao {
 				String id = rs.getString("id");
 				String username = rs.getString("username");
 				String content = rs.getString("content");
-				String hourStr = rs.getString("time");
 				String userId = rs.getString("userid");
-				if (hourStr == null) {
-					hourStr = "";
-				}
-				String time = rs.getDate("date").toString() + " " + hourStr;
+				String time = DateUtil.getTimeStamp(rs.getTimestamp("date")+"");
 				String commentNum = rs.getString("count");
 				MessageBoardEntity entity = new MessageBoardEntity(id, userId,
 						content, time, username, commentNum);
@@ -126,7 +124,6 @@ public class MessageBoardDao {
 		try {
 			manager.connDB();
 			flag = manager.executeUpdate(sql);
-			System.out.println("sql = " + sql);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -147,7 +144,7 @@ public class MessageBoardDao {
 				+ " FROM t_message m LEFT JOIN "
 				+ "(SELECT COUNT(message_id) AS num,id,message_id FROM t_comment GROUP BY message_id) c "
 				+ "ON c.message_id = m.id  LEFT JOIN t_user u ON u.id = m.userid WHERE m.userid = '"
-				+ userId + "'";
+				+ userId + "' order by m.date desc" ;
 
 		List<MessageBoardEntity> mMessageInfos = new ArrayList<MessageBoardEntity>();
 		String json = null;
@@ -161,11 +158,7 @@ public class MessageBoardDao {
 				String id = rs.getString("id");
 				String username = rs.getString("username");
 				String content = rs.getString("content");
-				String hourStr = rs.getString("time");
-				if (hourStr == null) {
-					hourStr = "";
-				}
-				String time = rs.getDate("date").toString() + " " + hourStr;
+				String time = DateUtil.getTimeStamp(rs.getTimestamp("date")+"");
 				String commentNum = rs.getString("count");
 				MessageBoardEntity entity = new MessageBoardEntity(id, userId,
 						content, time, username, commentNum);
@@ -180,5 +173,31 @@ public class MessageBoardDao {
 		System.out.println("json = " + json);
 		return json;
 	}
+	
+	/**
+	 * ÃÌº”ÀµÀµ
+	 * 
+	 * @param messageId
+	 * @param commentContent
+	 * @return
+	 */
+	public ResponseEntity addMessages(MessageBoardEntity entity) {
+		String sql = "INSERT INTO  t_message(userid,content,date) VALUES("
+				+ "'"+ entity.getUserId()  + "','" + entity.getContent() + "','" + entity.getTime() + "')";
+		System.out.println("addComment sql = " + sql);
+		int flag = 0;
+		try {
+			manager.connDB();
+			flag = manager.executeUpdate(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		ResponseEntity response = new ResponseEntity();
+		response.setCode(flag);
+		return response;
+	}
+
+	
+	
 
 }

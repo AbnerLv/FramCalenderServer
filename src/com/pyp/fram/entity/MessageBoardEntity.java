@@ -3,7 +3,7 @@ package com.pyp.fram.entity;
 public class MessageBoardEntity {
 	
 	private String id;
-	private String userid;
+	private String userId;
 	private String content;
 	private String time;
 	private String username;
@@ -13,10 +13,10 @@ public class MessageBoardEntity {
 	public MessageBoardEntity() {
 	
 	}
-	public MessageBoardEntity(String id, String userid, String content,
+	public MessageBoardEntity(String id, String userId, String content,
 			String time, String username, String commentNum) {
 		this.id = id;
-		this.userid = userid;
+		this.userId = userId;
 		this.content = content;
 		this.time = time;
 		this.username = username;
@@ -28,11 +28,13 @@ public class MessageBoardEntity {
 	public void setId(String id) {
 		this.id = id;
 	}
-	public String getUserid() {
-		return userid;
+	
+	
+	public String getUserId() {
+		return userId;
 	}
-	public void setUserid(String userid) {
-		this.userid = userid;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 	public String getContent() {
 		return content;
